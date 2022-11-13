@@ -23,7 +23,9 @@
     
     <form class="row g-3" method="POST" action="index.php">
     <?php
+      // Configure sweepstake options here
       $sweep_opts = array('Qatar', 'Netherlands', 'Senegal', 'Ecuador', 'England', 'USA', 'Wales', 'Iran', 'Argentina', 'Poland', 'Mexico', 'Saudi Arabia', 'France', 'Denmark', 'Tunisia', 'Australia', 'Germany', 'Spain', 'Japan', 'Costa Rica', 'Belgium', 'Croatia', 'Canada', 'Morocco', 'Brazil', 'Switzerland', 'Serbia', 'Cameroon', 'Portugal', 'Uruguay', 'Ghana', 'Korea Republic');
+      
       $sweep_opts_number = count($sweep_opts);
 
       if(!isset($_POST['participantsnum']) && !isset($_POST['participants'])) {
@@ -61,20 +63,23 @@
           $opts_per_person = (int) $max_opts_per_person;
           echo '<p>Options per person: '.$opts_per_person.'</p>';
           
-          foreach ($participants as $participant) {
-            $sweep_opts_random = array_rand($sweep_opts);
-            
-            $results[$participant] = $sweep_opts[$sweep_opts_random];
-
-            unset($sweep_opts[$sweep_opts_random]);
+          for ($x = 0; $x < $opts_per_person; $x++) {
+            foreach ($participants as $participant) {
+              $sweep_opts_random = array_rand($sweep_opts);
+              
+              $results[$participant] .= ' | ' . $sweep_opts[$sweep_opts_random];
+  
+              unset($sweep_opts[$sweep_opts_random]);
+            }
           }
+          
           
           echo '<div class="row">';
           echo '<div class="col">';
           echo '<h2>Final draw</h2>';
 
           foreach($results as $person => $opts) { 
-            echo '<p>'.$person.' - '.$opts.'</p>';
+            echo '<p><strong>'.$person.'</strong> '.$opts.'</p>';
           }
 
           echo '</div>';
