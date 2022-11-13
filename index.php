@@ -24,8 +24,12 @@
     <form class="row g-3" method="POST" action="index.php">
     <?php
       // Configure sweepstake options here
+
+      // Each participant is given one premium option
+      $premium_sweep_opts = array('Brazil', 'France', 'England', 'Argentina', 'Spain', 'Germany', 'Netherlands', 'Belgium', 'Portugal', 'Denmark', 'Uruguay');
+      // All options including premium options
       $sweep_opts = array('Qatar', 'Netherlands', 'Senegal', 'Ecuador', 'England', 'USA', 'Wales', 'Iran', 'Argentina', 'Poland', 'Mexico', 'Saudi Arabia', 'France', 'Denmark', 'Tunisia', 'Australia', 'Germany', 'Spain', 'Japan', 'Costa Rica', 'Belgium', 'Croatia', 'Canada', 'Morocco', 'Brazil', 'Switzerland', 'Serbia', 'Cameroon', 'Portugal', 'Uruguay', 'Ghana', 'Korea Republic');
-      
+
       $sweep_opts_number = count($sweep_opts);
 
       if(!isset($_POST['participantsnum']) && !isset($_POST['participants'])) {
@@ -65,11 +69,24 @@
           
           for ($x = 0; $x < $opts_per_person; $x++) {
             foreach ($participants as $participant) {
-              $sweep_opts_random = array_rand($sweep_opts);
+              if ($x == 0 && isset($premium_sweep_opts)) {
+                $sweep_opts_random = array_rand($premium_sweep_opts);
               
-              $results[$participant] .= ' | ' . $sweep_opts[$sweep_opts_random];
+                $results[$participant] .= ' | ' . $premium_sweep_opts[$sweep_opts_random];
+
+                if (($key = array_search($premium_sweep_opts[$sweep_opts_random], $sweep_opts)) !== false) {
+                  unset($sweep_opts[$key]);
+                }
   
-              unset($sweep_opts[$sweep_opts_random]);
+                unset($premium_sweep_opts[$sweep_opts_random]);
+              }
+              else {
+                $sweep_opts_random = array_rand($sweep_opts);
+              
+                $results[$participant] .= ' | ' . $sweep_opts[$sweep_opts_random];
+  
+                unset($sweep_opts[$sweep_opts_random]);
+              }
             }
           }
           
